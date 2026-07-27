@@ -1,0 +1,42 @@
+services:
+  mariadb:
+    build: ./requirements/mariadb
+    image: mariadb
+    container_name: mariadb
+    env_file: .env
+    secrets:
+      - db_password
+      - db_root_password
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    networks:
+      - inception
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "timeout 2s bash -c '</dev/tcp/127.0.0.1/3306' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      
+      # docker exec -it mariadb mysql -u root -p -e "SHOW DATABASES;"
+
+
+volumes:
+  mariadb_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/${USER_LOG:-${SUDO_USER:-$USER}}/data/mariadb
+
+networks:
+  inception:
+    driver: bridge
+
+secrets:
+  db_password:
+    file: ${DB_PASSWORD_HOST_FILE}
+  db_root_password:
+    file: ${DB_ROOT_PASSWORD_HOST_FILE}
+  credentials:
+    file: ../secrets/credentials.txt

@@ -3,9 +3,9 @@ draft/
 srcs/.env
 .env
 
+secrets/
 data/
 */data/
-/home/ybutkov/data/
 
 *.crt
 *.key

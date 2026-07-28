@@ -1,3 +1,5 @@
+name: inception
+
 services:
   mariadb:
     build: ./requirements/mariadb
@@ -5,20 +7,50 @@ services:
     container_name: mariadb
     env_file: .env
     secrets:
-      - db_password
-      - db_root_password
+      - mariadb_root_pass
+      - mariadb_admin_pass
+      - mariadb_wp_user_pass
     volumes:
       - mariadb_data:/var/lib/mysql
     networks:
-      - inception
+      - backend
     restart: always
     healthcheck:
-      test: ["CMD-SHELL", "timeout 2s bash -c '</dev/tcp/127.0.0.1/3306' || exit 1"]
+      test: [
+        "CMD", "mariadb-admin", "ping", "-h", "localhost", 
+        "-u", "healthcheck", "-phealth_password"
+        ]
       interval: 10s
       timeout: 5s
       retries: 3
       
       # docker exec -it mariadb mysql -u root -p -e "SHOW DATABASES;"
+      # docker exec -it mariadb mysql -u root -p -e "SELECT User, Host FROM mysql.user;"
+      
+
+  
+  wordpress:
+    build: ./requirements/wordpress
+    image: wordpress
+    container_name: wordpress
+    env_file: .env
+    secrets:
+      - mariadb_wp_user_pass
+      - wp_admin_pass
+      - wp_user_pass
+    volumes:
+      - wordpress_data:/var/www/html
+    networks:
+      - backend
+    restart: always
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "timeout 2s bash -c '</dev/tcp/127.0.0.1/9000' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
 
 volumes:
@@ -29,14 +61,27 @@ volumes:
       o: bind
       device: /home/${USER_LOG:-${SUDO_USER:-$USER}}/data/mariadb
 
+  wordpress_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/${USER_LOG:-${SUDO_USER:-$USER}}/data/wordpress
+
+
 networks:
-  inception:
+  backend:
     driver: bridge
 
 secrets:
-  db_password:
-    file: ${DB_PASSWORD_HOST_FILE}
-  db_root_password:
-    file: ${DB_ROOT_PASSWORD_HOST_FILE}
-  credentials:
-    file: ../secrets/credentials.txt
+  mariadb_root_pass:
+    file: ${MARIADB_ROOT_PASSWORD_HOST_FILE}
+  mariadb_admin_pass:
+    file: ${MARIADB_ADMIN_PASSWORD_HOST_FILE}
+  mariadb_wp_user_pass:
+    file: ${MARIADB_WP_USER_PASSWORD_HOST_FILE}
+  
+  wp_admin_pass:
+    file: ${WP_ADMIN_PASSWORD_HOST_FILE}
+  wp_user_pass:
+    file: ${WP_USER_PASSWORD_HOST_FILE}

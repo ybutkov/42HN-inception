@@ -36,30 +36,32 @@ if [ ! -f "wp-config.php" ]; then
     echo "Creating wp-config.php and installing WordPress..."
     wp core download --allow-root
 
-wp config create \
-    --dbname="$WP_DB_NAME" \
-    --dbuser="$WP_DB_USER" \
-    --dbpass="$DB_PASSWORD" \
-    --dbhost="$WP_DB_HOST" \
-    --allow-root
+    wp config create \
+        --dbname="$WP_DB_NAME" \
+        --dbuser="$WP_DB_USER" \
+        --dbpass="$DB_PASSWORD" \
+        --dbhost="$WP_DB_HOST" \
+        --allow-root
 
-echo "Installing WordPress core..."
-wp core install \
-    --url="https://$DOMAIN_NAME" \
-    --title="$WP_TITLE" \
-    --admin_user="$WP_ADMIN_USER" \
-    --admin_password="$WP_ADMIN_PASSWORD" \
-    --admin_email="$WP_ADMIN_EMAIL" \
-    --skip-email \
-    --allow-root
+    echo "Installing WordPress core..."
+    wp core install \
+        --url="https://$DOMAIN_NAME" \
+        --title="$WP_TITLE" \
+        --admin_user="$WP_ADMIN_USER" \
+        --admin_password="$WP_ADMIN_PASSWORD" \
+        --admin_email="$WP_ADMIN_EMAIL" \
+        --skip-email \
+        --allow-root
 
-echo "Creating regular user..."
-wp user create \
-    "$WP_USER" \
-    "$WP_USER_EMAIL" \
-    --user_pass="$WP_USER_PASSWORD" \
-    --role=author \
-    --allow-root
+    echo "Creating regular user..."
+    wp user create \
+        "$WP_USER" \
+        "$WP_USER_EMAIL" \
+        --user_pass="$WP_USER_PASSWORD" \
+        --role=author \
+        --allow-root
+
+    chown -R www-data:www-data /var/www/html
 
     echo "WordPress installation finished!"
 else

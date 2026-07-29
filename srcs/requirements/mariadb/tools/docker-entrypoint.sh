@@ -68,6 +68,7 @@ IDENTIFIED BY 'health_password';
 
 GRANT USAGE ON *.* TO 'healthcheck'@'localhost';
 
+DROP DATABASE IF EXISTS test;
 DROP USER IF EXISTS ''@'localhost';
 DROP USER IF EXISTS ''@'${HOSTNAME}';
 

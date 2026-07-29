@@ -22,8 +22,6 @@ prepare:
 	done
 		
 	@mkdir -p "$(CERT_DIR)"
-	echo "$(PWD)"
-	echo "$(CERT_DIR)"
 	
 	@if [ ! -f "$(CERT_DIR)/inception_nginx.crt" ]; then \
 		echo "Generating SSL certificate"; \
@@ -32,8 +30,10 @@ prepare:
 			-newkey rsa:2048 \
 			-keyout "$(CERT_KEY_FILE)" \
 			-out "$(CERT_HOST_FILE)" \
-			-subj "/CN=$(DOMAIN_NAME)"; \
+			-subj "/C=DE/ST=Baden-Wurttemberg/L=Heilbronn/O=42/CN=$(DOMAIN_NAME)"
+			-addext "subjectAltName=DNS:$(DOMAIN_NAME)"; \
 	fi
+# -subj "/CN=$(DOMAIN_NAME)"; 
 # -subj "/C=DE/ST=Baden-Wurttemberg/L=Heilbronn/O=42/CN=localhost"
 
 down:
@@ -80,6 +80,13 @@ info:
 
 	@echo "\n==================== DATA ======================"
 	@du -sh $(DATA_PATH) 2>/dev/null || echo "No data directory"
+
+cpenv:
+	SSH_PORT=14242; \
+	HOST_APP_DIR=/home/ybutkov/Documents/Curriculum/inception; \
+	VM_APP_DIR=/home/ybutkov/Documents/42HN-inception; \
+	scp -P $$SSH_PORT $$HOST_APP_DIR/srcs/.env ybutkov@127.0.0.1:$$VM_APP_DIR/srcs/ ; \
+	scp -P $$SSH_PORT -r $$HOST_APP_DIR/secrets ybutkov@127.0.0.1:$$VM_APP_DIR
 
 
 .PHONY: all up down stop start logs clean fclean f re info

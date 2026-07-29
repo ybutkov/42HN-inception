@@ -26,8 +26,6 @@ services:
       
       # docker exec -it mariadb mysql -u root -p -e "SHOW DATABASES;"
       # docker exec -it mariadb mysql -u root -p -e "SELECT User, Host FROM mysql.user;"
-      
-
   
   wordpress:
     build: ./requirements/wordpress
@@ -52,6 +50,29 @@ services:
       timeout: 5s
       retries: 3
 
+  nginx:
+    build: ./requirements/nginx
+    image: nginx
+    container_name: nginx
+    env_file: .env
+    ports:
+      - "1443:443"
+    secrets:
+      - nginx_cert
+      - nginx_key
+    volumes:
+      - wordpress_data:/var/www/html
+    networks:
+      - backend
+    restart: always
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-k", "-f", "https://127.0.0.1:443"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
 volumes:
   mariadb_data:
@@ -85,3 +106,9 @@ secrets:
     file: ${WP_ADMIN_PASSWORD_HOST_FILE}
   wp_user_pass:
     file: ${WP_USER_PASSWORD_HOST_FILE}
+  
+  nginx_cert:
+    file: ${NGINX_SSL_CERTIFICATE_HOST_FILE}
+  nginx_key:
+    file: ${NGINX_SSL_CERTIFICATE_KEY_HOST_FILE}
+

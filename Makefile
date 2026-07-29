@@ -11,7 +11,7 @@ CERT_HOST_FILE := $(shell realpath -m srcs/$(NGINX_SSL_CERTIFICATE_HOST_FILE))
 CERT_KEY_FILE  := $(shell realpath -m srcs/$(NGINX_SSL_CERTIFICATE_KEY_HOST_FILE))
 CERT_DIR       := $(dir $(CERT_HOST_FILE))
 
-VOLUMES    	:= mariadb wordpress
+VOLUMES    	:= mariadb wordpress redis
 
 all: prepare
 	$(COMPOSE) up -d --build
@@ -33,8 +33,6 @@ prepare:
 			-subj "/C=DE/ST=Baden-Wurttemberg/L=Heilbronn/O=42/CN=$(DOMAIN_NAME)" \
 			-addext "subjectAltName=DNS:$(DOMAIN_NAME)"; \
 	fi
-# -subj "/CN=$(DOMAIN_NAME)"; 
-# -subj "/C=DE/ST=Baden-Wurttemberg/L=Heilbronn/O=42/CN=localhost"
 
 down:
 	$(COMPOSE) down

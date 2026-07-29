@@ -44,6 +44,8 @@ services:
     depends_on:
       mariadb:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     healthcheck:
       test: ["CMD-SHELL", "timeout 2s bash -c '</dev/tcp/127.0.0.1/9000' || exit 1"]
       interval: 10s
@@ -56,7 +58,7 @@ services:
     container_name: nginx
     env_file: .env
     ports:
-      - "443:443"
+      - "1443:443"
     secrets:
       - nginx_cert
       - nginx_key
@@ -66,13 +68,30 @@ services:
       - backend
     restart: always
     depends_on:
-      mariadb:
+      wordpress:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-k", "-f", "https://127.0.0.1:443"]
       interval: 10s
       timeout: 5s
       retries: 3
+  
+  redis:
+    build: ./requirements/bonus/redis
+    image: redis:0.1
+    container_name: redis
+    restart: always
+    volumes:
+      - redis_data:/data
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+  
 
 volumes:
   mariadb_data:
@@ -88,6 +107,13 @@ volumes:
       type: none
       o: bind
       device: /home/${USER_LOG:-${SUDO_USER:-$USER}}/data/wordpress
+
+  redis_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/${USER_LOG:-${SUDO_USER:-$USER}}/data/redis
 
 
 networks:

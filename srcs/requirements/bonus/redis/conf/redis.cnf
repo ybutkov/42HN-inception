@@ -1,0 +1,12 @@
+bind 0.0.0.0
+protected-mode no
+port 6379
+daemonize no
+
+logfile ""
+
+dir /data
+appendonly yes
+
+maxmemory 256mb
+maxmemory-policy allkeys-lru

@@ -7,7 +7,7 @@ RUN apt-get update && \
 
 RUN mkdir -p /var/run/vsftpd/empty
 
-COPY conf/vsftpd.conf /etc/vsftpd.conf
+COPY conf/vsftpd.conf.template /etc/vsftpd.conf.template
 COPY tools/docker-entrypoint.sh /usr/local/bin/setup-ftp.sh
 
 RUN chmod +x /usr/local/bin/setup-ftp.sh

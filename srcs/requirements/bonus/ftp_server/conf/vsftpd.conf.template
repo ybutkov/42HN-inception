@@ -3,7 +3,7 @@ background=NO
 local_enable=YES
 
 write_enable=YES
-local_umask=022
+local_umask=002
 
 xferlog_enable=YES
 xferlog_file=/var/log/vsftpd.log

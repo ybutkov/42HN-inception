@@ -17,6 +17,7 @@ fi
 
 chown -R "$FTP_USER":www-data /var/www/html
 chmod -R 775 /var/www/html
+chmod g+s /var/www/html
 
 sed "s|\${FTP_PASV_ADDRESS}|${DOMAIN_NAME}|g" \
     /etc/vsftpd.conf.template \

@@ -28,6 +28,4 @@ COPY conf/www.conf /etc/php/${PHP_VERSION}/fpm/pool.d/www.conf
 
 EXPOSE 9000
 
-USER adminer
-
 CMD ["php-fpm8.2", "-F"]

@@ -22,7 +22,7 @@ RUN apt-get update && \
 RUN curl -o /usr/local/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
     chmod +x /usr/local/bin/wp
 
-COPY conf/www.conf /etc/php/8.2/fpm/pool.d/www.conf
+COPY conf/www.conf /etc/php/${PHP_VERSION}/fpm/pool.d/www.conf
 COPY tools/docker-entrypoint.sh /usr/local/bin/
 
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh

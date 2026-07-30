@@ -88,4 +88,4 @@ cpenv:
 	scp -P $$SSH_PORT -r $$HOST_APP_DIR/secrets ybutkov@127.0.0.1:$$VM_APP_DIR
 
 
-.PHONY: all up down stop start logs clean fclean f re info
+.PHONY: all up down stop start logs clean fclean f re info cpenv

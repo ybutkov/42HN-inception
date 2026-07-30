@@ -16,12 +16,12 @@ VOLUMES    	:= mariadb wordpress redis
 all: prepare
 	$(COMPOSE) up -d --build
 
-prepare:
+prepare:	
 	@for vol in $(VOLUMES); do \
-		mkdir -p $(DATA_PATH)/$$vol; \
-		chmod 777 $(DATA_PATH)/$$vol; \
+		mkdir -p "$(DATA_PATH)/$$vol"; \
+		chmod 777 "$(DATA_PATH)/$$vol" 2>/dev/null || true; \
 	done
-		
+
 	@mkdir -p "$(CERT_DIR)"
 	
 	@if [ ! -f "$(CERT_DIR)/inception_nginx.crt" ]; then \

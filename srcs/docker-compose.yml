@@ -92,6 +92,16 @@ services:
       retries: 3
       start_period: 5s
   
+  adminer:
+    build: ./requirements/bonus/adminer
+    image: adminer:0.1
+    container_name: adminer
+    restart: always
+    networks:
+      - backend
+    depends_on:
+      mariadb:
+        condition: service_healthy
 
 volumes:
   mariadb_data:

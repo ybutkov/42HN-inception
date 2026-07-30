@@ -19,6 +19,7 @@ all: prepare
 prepare:
 	@for vol in $(VOLUMES); do \
 		mkdir -p $(DATA_PATH)/$$vol; \
+		chmod 777 $(DATA_PATH)/$$vol; \
 	done
 		
 	@mkdir -p "$(CERT_DIR)"

@@ -110,6 +110,25 @@ services:
       timeout: 5s
       retries: 3
 
+  ftp_server:
+    build: ./requirements/bonus/ftp_server
+    image: ftp_server:0.1
+    container_name: ftp_server
+    restart: always
+    env_file: .env
+    ports:
+      - "21:21"
+      - "21100-21110:21100-21110"
+    volumes:
+      - wordpress_data:/var/www/html
+    networks:
+      - backend
+    secrets:
+      - ftp_pass
+    depends_on:
+      wordpress:
+        condition: service_started
+
 volumes:
   mariadb_data:
     driver: local
@@ -154,4 +173,7 @@ secrets:
     file: ${NGINX_SSL_CERTIFICATE_HOST_FILE}
   nginx_key:
     file: ${NGINX_SSL_CERTIFICATE_KEY_HOST_FILE}
+
+  ftp_pass:
+    file: ${FTP_PASSWORD_HOST_FILE}
 

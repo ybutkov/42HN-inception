@@ -118,7 +118,7 @@ services:
     env_file: .env
     ports:
       - "21:21"
-      - "21100-21110:21100-21110"
+      - "21210-21220:21210-21220"
     volumes:
       - wordpress_data:/var/www/html
     networks:
@@ -133,6 +133,14 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+
+  my-website:
+    build: ./requirements/bonus/my-website
+    image: my-website:0.1
+    container_name: my-website
+    restart: always
+    networks:
+      - backend
 
 volumes:
   mariadb_data:

@@ -32,7 +32,7 @@ prepare:
 			-keyout "$(CERT_KEY_FILE)" \
 			-out "$(CERT_HOST_FILE)" \
 			-subj "/C=DE/ST=Baden-Wurttemberg/L=Heilbronn/O=42/CN=$(DOMAIN_NAME)" \
-			-addext "subjectAltName=DNS:$(DOMAIN_NAME)"; \
+			-addext "subjectAltName=DNS:$(DOMAIN_NAME),DNS:me.$(DOMAIN_NAME)"; \
 	fi
 
 down:

@@ -12,6 +12,6 @@ COPY tools/docker-entrypoint.sh /usr/local/bin/setup-ftp.sh
 
 RUN chmod +x /usr/local/bin/setup-ftp.sh
 
-EXPOSE 21 21100-21110
+EXPOSE 21 21210-21220
 
 ENTRYPOINT ["/usr/local/bin/setup-ftp.sh"]

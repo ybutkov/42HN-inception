@@ -13,6 +13,7 @@ RUN apt-get update && \
         php${PHP_VERSION}-mbstring \
         php${PHP_VERSION}-zip \
         php${PHP_VERSION}-intl \
+        php${PHP_VERSION}-redis \
         mariadb-client \
         curl \
 		ca-certificates \

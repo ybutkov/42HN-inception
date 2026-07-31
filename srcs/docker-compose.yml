@@ -129,7 +129,7 @@ services:
       wordpress:
         condition: service_started
     healthcheck:
-      test: ["CMD-SHELL", "ftp -n localhost <<< quit || exit 1"]
+      test: ["CMD-SHELL", "pgrep vsftpd || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3

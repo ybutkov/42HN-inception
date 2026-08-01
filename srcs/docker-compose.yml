@@ -17,9 +17,10 @@ services:
     restart: always
     healthcheck:
       test: [
-        "CMD", "mariadb-admin", "ping", "-h", "localhost", 
-        "-u", "healthcheck", "-phealth_password"
-        ]
+        "CMD", "mariadb-admin", "--protocol=socket",
+        "-S", "/run/mysqld/mysqld.sock", "ping",
+        "-u", "healthcheck"
+      ]
       interval: 10s
       timeout: 5s
       retries: 3

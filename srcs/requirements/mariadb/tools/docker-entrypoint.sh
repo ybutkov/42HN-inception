@@ -63,8 +63,8 @@ IDENTIFIED BY '${MARIADB_WP_USER_PASSWORD}';
 GRANT ALL PRIVILEGES 
 ON \`${MARIADB_DATABASE}\`.* TO '${MARIADB_WP_USER}'@'%';
 
-CREATE USER 'healthcheck'@'localhost'
-IDENTIFIED BY 'health_password';
+CREATE USER IF NOT EXISTS 'healthcheck'@'localhost' 
+IDENTIFIED VIA unix_socket AS 'root';
 
 GRANT USAGE ON *.* TO 'healthcheck'@'localhost';
 

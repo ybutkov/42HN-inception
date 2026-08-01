@@ -5,7 +5,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
-RUN git clone --depth 1 --branch v7.0.6 https://github.com/StartBootstrap/startbootstrap-resume.git .
+RUN git clone --depth 1 --branch uv1.0.0 https://github.com/ybutkov/startbootstrap-resume.git .
 
 RUN npm install && npm run build
 

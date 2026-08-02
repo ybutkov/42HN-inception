@@ -20,7 +20,7 @@ RUN mkdir -p /run/php
 
 WORKDIR /var/www/html
 
-RUN curl -sSL "https://github.com/vrana/adminer/releases/download/v${ADMINER_VERSION}/adminer-${ADMINER_VERSION}.php" -o index.php && \
+RUN curl -fsSL "https://github.com/vrana/adminer/releases/download/v${ADMINER_VERSION}/adminer-${ADMINER_VERSION}.php" -o index.php && \
     echo "${ADMINER_SHA256}  index.php" | sha256sum -c - && \
     chown -R adminer:adminer /var/www/html
 

@@ -94,7 +94,18 @@ services:
       timeout: 3s
       retries: 3
       start_period: 5s
-  
+
+  portainer:
+    build: ./requirements/bonus/portainer
+    image: portainer:0.1
+    container_name: portainer
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    networks:
+      - backend
+
   adminer:
     build: ./requirements/bonus/adminer
     image: adminer:0.1
@@ -164,6 +175,14 @@ volumes:
       type: none
       o: bind
       device: /home/${USER_LOG:-${SUDO_USER:-$USER}}/data/redis
+
+  portainer_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/${USER_LOG:-${SUDO_USER:-$USER}}/data/portainer
+
 
 
 networks:

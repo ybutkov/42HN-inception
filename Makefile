@@ -11,7 +11,7 @@ CERT_HOST_FILE := $(shell realpath -m srcs/$(NGINX_SSL_CERTIFICATE_HOST_FILE))
 CERT_KEY_FILE  := $(shell realpath -m srcs/$(NGINX_SSL_CERTIFICATE_KEY_HOST_FILE))
 CERT_DIR       := $(dir $(CERT_HOST_FILE))
 
-VOLUMES    	:= mariadb wordpress redis
+VOLUMES    	:= mariadb wordpress redis portainer
 
 all: prepare
 	$(COMPOSE) up -d --build
@@ -51,9 +51,6 @@ clean:
 	$(COMPOSE) down --rmi all --volumes
 
 fclean f: clean
-# 	@docker run --rm -v $(DATA_PATH):/data \
-# 	alpine \
-# 	sh -c 'rm -rf $(addprefix /data/,$(VOLUMES))'
 	@docker run --rm -v $(DATA_PATH):/data alpine sh -c 'rm -rf /data/*'
 
 re: fclean all
@@ -80,6 +77,7 @@ info:
 	@echo "\n==================== DATA ======================"
 	@du -sh $(DATA_PATH) 2>/dev/null || echo "No data directory"
 
+# Sync local env/secrets with the remote VM
 cpenv:
 	SSH_PORT=14242; \
 	HOST_APP_DIR=/home/ybutkov/Documents/Curriculum/inception; \

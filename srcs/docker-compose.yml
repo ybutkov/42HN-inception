@@ -105,6 +105,8 @@ services:
       - portainer_data:/data
     networks:
       - backend
+    secrets:
+      - portainer_admin_pass
 
   adminer:
     build: ./requirements/bonus/adminer
@@ -183,8 +185,6 @@ volumes:
       o: bind
       device: /home/${USER_LOG:-${SUDO_USER:-$USER}}/data/portainer
 
-
-
 networks:
   backend:
     driver: bridge
@@ -209,4 +209,7 @@ secrets:
 
   ftp_password:
     file: ${FTP_PASSWORD_HOST_FILE}
+
+  portainer_admin_pass:
+    file: ${PORTAINER_PASSWORD_HOST_FILE}
 

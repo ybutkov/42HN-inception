@@ -7,7 +7,8 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     curl \
     ca-certificates \
-    tar && \
+    tar \
+    apache2-utils && \
     rm -rf /var/lib/apt/lists/*
 
 RUN curl -fsSL "https://github.com/portainer/portainer/releases/download/${PORTAINER_VERSION}/portainer-${PORTAINER_VERSION}-linux-amd64.tar.gz" \
@@ -16,6 +17,9 @@ RUN curl -fsSL "https://github.com/portainer/portainer/releases/download/${PORTA
     tar -xzf /tmp/portainer.tar.gz -C /usr/local && \
     rm /tmp/portainer.tar.gz
 
+COPY tools/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
 EXPOSE 9000
 
-CMD ["/usr/local/portainer/portainer", "--data", "/data"]
+ENTRYPOINT ["docker-entrypoint.sh"]

@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 if [ -f "$PORTAINER_PASSWORD_FILE" ]; then
     PORTAINER_PASS=$(cat "$PORTAINER_PASSWORD_FILE" | tr -d '\r\n')
     if [ -n "$PORTAINER_PASS" ]; then

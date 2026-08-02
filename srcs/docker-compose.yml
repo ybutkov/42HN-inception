@@ -99,6 +99,7 @@ services:
     build: ./requirements/bonus/portainer
     image: portainer:0.1
     container_name: portainer
+    env_file: .env
     restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock

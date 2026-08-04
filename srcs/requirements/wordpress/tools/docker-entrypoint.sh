@@ -73,4 +73,4 @@ fi
 
 mkdir -p /run/php
 
-exec php-fpm8.2 -F
+exec php-fpm${PHP_VERSION} -F

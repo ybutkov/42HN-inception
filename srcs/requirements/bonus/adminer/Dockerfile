@@ -1,10 +1,10 @@
-FROM debian:bookworm
+FROM debian:bookworm-slim
 
 ARG PHP_VERSION=8.2
-ARG PHP_FPM=php-fpm${PHP_VERSION}
-
 ARG ADMINER_VERSION=5.2.0
 ARG ADMINER_SHA256=d6ae5bfa46263ab2ee16e80d66fc6d5300bc38361210a54019354e192714d73e
+
+ENV PHP_VERSION=${PHP_VERSION}
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -28,4 +28,4 @@ COPY conf/www.conf /etc/php/${PHP_VERSION}/fpm/pool.d/www.conf
 
 EXPOSE 9000
 
-CMD ["php-fpm8.2", "-F"]
+CMD ["sh", "-c", "exec php-fpm${PHP_VERSION} -F"]

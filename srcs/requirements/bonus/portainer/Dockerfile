@@ -1,6 +1,7 @@
-FROM debian:bookworm
+FROM debian:bookworm-slim
 
 ARG PORTAINER_VERSION=2.43.0
+ARG APACHE2_UTILS_VERSION=2.4.68-1~deb12u1
 ARG PORTAINER_SHA256=d769c3639cf11e298e2d1ea93290a6f50144cded0cfe3f6cd60166ec3e2259f5
 
 RUN apt-get update && \
@@ -8,7 +9,7 @@ RUN apt-get update && \
     curl \
     ca-certificates \
     tar \
-    apache2-utils && \
+    apache2-utils=${APACHE2_UTILS_VERSION} && \
     rm -rf /var/lib/apt/lists/*
 
 RUN curl -fsSL "https://github.com/portainer/portainer/releases/download/${PORTAINER_VERSION}/portainer-${PORTAINER_VERSION}-linux-amd64.tar.gz" \

@@ -1,8 +1,11 @@
-FROM debian:bookworm
+FROM debian:bookworm-slim
 
 ARG PHP_VERSION=8.2
+ARG WP_CLI_VERSION=2.10.0
+ARG MARIADB_VERSION=1:10.11.18-0+deb12u1
 
-# RUN set -eux;   ? for all lines
+ENV PHP_VERSION=${PHP_VERSION}
+
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         php${PHP_VERSION}-fpm \
@@ -14,13 +17,13 @@ RUN apt-get update && \
         php${PHP_VERSION}-zip \
         php${PHP_VERSION}-intl \
         php${PHP_VERSION}-redis \
-        mariadb-client \
+        mariadb-client=${MARIADB_VERSION} \
         curl \
 		ca-certificates \
         unzip && \
     rm -rf /var/lib/apt/lists/*
 
-RUN curl -o /usr/local/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && \
+RUN curl -fsSL "https://github.com/wp-cli/wp-cli/releases/download/v${WP_CLI_VERSION}/wp-cli-${WP_CLI_VERSION}.phar" -o /usr/local/bin/wp && \
     chmod +x /usr/local/bin/wp
 
 COPY conf/www.conf /etc/php/${PHP_VERSION}/fpm/pool.d/www.conf

@@ -11,6 +11,7 @@ RUN apt-get update && \
 
 COPY conf/nginx.conf /etc/nginx/nginx.conf
 COPY tools/docker-entrypoint.sh /usr/local/bin/
+COPY tools/entrypoint-lib.sh /usr/local/lib/
 
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 

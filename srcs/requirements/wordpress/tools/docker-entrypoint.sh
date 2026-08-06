@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+source /usr/local/lib/entrypoint-lib.sh
+
 # if [ -f "$WP_DB_PASSWORD_FILE" ]; then
 #     DB_PASSWORD=$(cat "$WP_DB_PASSWORD_FILE")
 # else

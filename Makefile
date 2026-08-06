@@ -19,7 +19,7 @@ SECRETS = db_root_password.txt \
           ftp_password.txt \
           portainer_admin_password.txt
 
-SECRETS_DIR = srcs/secrets
+SECRETS_DIR = secrets
 
 VOLUMES    	:= mariadb wordpress redis portainer
 

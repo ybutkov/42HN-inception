@@ -3,34 +3,20 @@ set -e
 
 source /usr/local/lib/entrypoint-lib.sh
 
-# if [ -f "$WP_DB_PASSWORD_FILE" ]; then
-#     DB_PASSWORD=$(cat "$WP_DB_PASSWORD_FILE")
-# else
-#     echo "ERROR: Secret file $WP_DB_PASSWORD_FILE not found!" >&2
-#     exit 1
-# fi
+require_env DOMAIN_NAME
+require_env WP_DB_NAME
+require_env WP_DB_USER
+require_env WP_DB_PASSWORD_FILE
+require_env WP_DB_HOST
+require_env WP_ADMIN_USER
+require_env WP_ADMIN_EMAIL
+require_env WP_USER
+require_env WP_USER_EMAIL
+
+
 DB_PASSWORD=$(read_secret "$WP_DB_PASSWORD_FILE")
-
-# if [ -f "$WP_ADMIN_PASSWORD_FILE" ]; then
-#     WP_ADMIN_PASSWORD=$(cat "$WP_ADMIN_PASSWORD_FILE")
-# else
-#     echo "ERROR: Secret file $WP_ADMIN_PASSWORD_FILE not found!" >&2
-#     exit 1
-# fi
 WP_ADMIN_PASSWORD=$(read_secret "$WP_ADMIN_PASSWORD_FILE")
-
-# if [ -f "$WP_USER_PASSWORD_FILE" ]; then
-#     WP_USER_PASSWORD=$(cat "$WP_USER_PASSWORD_FILE")
-# else
-#     echo "ERROR: Secret file $WP_USER_PASSWORD_FILE not found!" >&2
-#     exit 1
-# fi
 WP_USER_PASSWORD=$(read_secret "$WP_USER_PASSWORD_FILE")
-
-# if [ -z "$DB_PASSWORD" ] || [ -z "$WP_ADMIN_PASSWORD" ] || [ -z "$WP_USER_PASSWORD" ]; then
-#     echo "ERROR: One or more secret files are empty!" >&2
-#     exit 1
-# fi
 
 cd /var/www/html
 

@@ -1,12 +1,11 @@
 #!/bin/sh
 
+source /usr/local/lib/entrypoint-lib.sh
 
-if [ -f "$FTP_PASSWORD_FILE" ]; then
-    FTP_PASSWORD=$(cat "$FTP_PASSWORD_FILE")
-else
-    echo "ERROR: Secret file $FTP_PASSWORD_FILE not found!" >&2
-    exit 1
-fi
+require_env DOMAIN_NAME
+require_env FTP_USER
+
+FTP_PASSWORD=$(read_secret "$FTP_PASSWORD_FILE")
 
 if ! id "$FTP_USER" >/dev/null 2>&1; then
     useradd -m -d /var/www/html -s /bin/sh "$FTP_USER"

@@ -7,39 +7,9 @@ require_env MARIADB_DATABASE
 require_env MARIADB_ADMIN_USER
 require_env MARIADB_WP_USER
 
-# if [ -f "$MARIADB_ROOT_PASSWORD_FILE" ]; then
-#     MYSQL_ROOT_PASSWORD=$(cat "$MARIADB_ROOT_PASSWORD_FILE")
-# else
-#     echo "ERROR: Secret file $MARIADB_ROOT_PASSWORD_FILE not found!" >&2
-#     exit 1
-# fi
-
 ROOT_PASSWORD=$(read_secret "$MARIADB_ROOT_PASSWORD_FILE")
-
-# if [ -f "$MARIADB_ADMIN_PASSWORD_FILE" ]; then
-#     MYSQL_ADMIN_PASSWORD=$(cat "$MARIADB_ADMIN_PASSWORD_FILE")
-# else
-#     echo "ERROR: Secret file $MARIADB_ADMIN_PASSWORD_FILE not found!" >&2
-#     exit 1
-# fi
-
 MYSQL_ADMIN_PASSWORD=$(read_secret "$MARIADB_ADMIN_PASSWORD_FILE")
-
-# if [ -f "$MARIADB_WP_USER_PASSWORD_FILE" ]; then
-#     MARIADB_WP_USER_PASSWORD=$(cat "$MARIADB_WP_USER_PASSWORD_FILE")
-# else
-#     echo "ERROR: Secret file $MARIADB_WP_USER_PASSWORD_FILE not found!" >&2
-#     exit 1
-# fi
-
 MARIADB_WP_USER_PASSWORD=$(read_secret "$MARIADB_WP_USER_PASSWORD_FILE")
-
-
-# if [ -z "$MYSQL_ROOT_PASSWORD" ] || [ -z "$MYSQL_ADMIN_PASSWORD" ] || [ -z "$MARIADB_WP_USER_PASSWORD" ]; then
-#     echo "ERROR: Secret files found, but one of the passwords is empty!" >&2
-#     exit 1
-# fi
-
 
 mkdir -p /run/mysqld
 

@@ -28,6 +28,7 @@ RUN curl -fsSL "https://github.com/wp-cli/wp-cli/releases/download/v${WP_CLI_VER
 
 COPY conf/www.conf /etc/php/${PHP_VERSION}/fpm/pool.d/www.conf
 COPY tools/docker-entrypoint.sh /usr/local/bin/
+COPY tools/entrypoint-lib.sh /usr/local/lib/
 
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 

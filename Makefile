@@ -55,6 +55,12 @@ prepare:
 	fi
 
 up:
+	cp srcs/scripts/entrypoint-lib.sh srcs/requirements/nginx/tools/
+	cp srcs/scripts/entrypoint-lib.sh srcs/requirements/wordpress/tools/
+	cp srcs/scripts/entrypoint-lib.sh srcs/requirements/mariadb/tools/
+	cp srcs/scripts/entrypoint-lib.sh srcs/requirements/bonus/ftp_server/tools/
+	cp srcs/scripts/entrypoint-lib.sh srcs/requirements/bonus/portainer/tools/
+
 	$(COMPOSE) up -d --build
 	
 down:
@@ -71,6 +77,12 @@ logs:
 
 clean:
 	$(COMPOSE) down --rmi all --volumes
+	rm -f srcs/requirements/nginx/tools/entrypoint-lib.sh
+	rm -f srcs/requirements/wordpress/tools/entrypoint-lib.sh
+	rm -f srcs/requirements/mariadb/tools/entrypoint-lib.sh
+	rm -f srcs/requirements/bonus/ftp_server/tools/entrypoint-lib.sh
+	rm -f srcs/requirements/bonus/portainer/tools/entrypoint-lib.sh
+
 
 fclean f: clean
 	@docker run --rm -v $(DATA_PATH):/data alpine sh -c 'rm -rf /data/*'

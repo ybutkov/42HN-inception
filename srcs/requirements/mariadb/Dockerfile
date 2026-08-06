@@ -12,6 +12,7 @@ RUN apt-get update -y && \
 
 COPY conf/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
 COPY tools/docker-entrypoint.sh /usr/local/bin/
+COPY tools/entrypoint-lib.sh /usr/local/lib/
 
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 

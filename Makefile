@@ -13,8 +13,8 @@ CERT_DIR       := $(dir $(CERT_HOST_FILE))
 
 VOLUMES    	:= mariadb wordpress redis portainer
 
-all: prepare
-	$(COMPOSE) up -d --build
+all: prepare up
+	
 
 prepare:	
 	@for vol in $(VOLUMES); do \
@@ -35,6 +35,9 @@ prepare:
 			-addext "subjectAltName=DNS:$(DOMAIN_NAME),DNS:me.$(DOMAIN_NAME)"; \
 	fi
 
+up:
+	$(COMPOSE) up -d --build
+	
 down:
 	$(COMPOSE) down
 

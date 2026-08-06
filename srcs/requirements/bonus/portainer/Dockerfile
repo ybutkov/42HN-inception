@@ -19,6 +19,8 @@ RUN curl -fsSL "https://github.com/portainer/portainer/releases/download/${PORTA
     rm /tmp/portainer.tar.gz
 
 COPY tools/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+COPY tools/entrypoint-lib.sh /usr/local/lib/
+
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 EXPOSE 9000

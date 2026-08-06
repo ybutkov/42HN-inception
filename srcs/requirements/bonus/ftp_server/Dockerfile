@@ -11,6 +11,7 @@ RUN mkdir -p /var/run/vsftpd/empty
 
 COPY conf/vsftpd.conf.template /etc/vsftpd.conf.template
 COPY tools/docker-entrypoint.sh /usr/local/bin/setup-ftp.sh
+COPY tools/entrypoint-lib.sh /usr/local/lib/
 
 RUN chmod +x /usr/local/bin/setup-ftp.sh
 

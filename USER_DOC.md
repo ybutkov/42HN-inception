@@ -198,7 +198,7 @@ All project settings are managed via the `srcs/.env` file. Sensitive data (passw
 * **Portainer**
   * **Admin Dashboard**
 
-        Admin login:             PORTAINER_ADMIN_USER               = portwine
+        Admin login(default):                                       = admin
         Password Host File:      PORTAINER_PASSWORD_HOST_FILE       = ../secrets/portainer_admin_password.txt
         Password Container Path: PORTAINER_PASSWORD_FILE            = /run/secrets/portainer_admin_pass
 

@@ -11,6 +11,16 @@ CERT_HOST_FILE := $(shell realpath -m srcs/$(NGINX_SSL_CERTIFICATE_HOST_FILE))
 CERT_KEY_FILE  := $(shell realpath -m srcs/$(NGINX_SSL_CERTIFICATE_KEY_HOST_FILE))
 CERT_DIR       := $(dir $(CERT_HOST_FILE))
 
+SECRETS = db_root_password.txt \
+          db_admin_password.txt \
+          db_wp_user_password.txt \
+          wp_admin_password.txt \
+          wp_user_password.txt \
+          ftp_password.txt \
+          portainer_admin_password.txt
+
+SECRETS_DIR = srcs/secrets
+
 VOLUMES    	:= mariadb wordpress redis portainer
 
 all: prepare up
@@ -23,6 +33,15 @@ prepare:
 	done
 
 	@mkdir -p "$(CERT_DIR)"
+
+	@mkdir -p "$(SECRETS_DIR)"
+	@for secret_file in $(SECRETS); do \
+		if [ ! -f "$(SECRETS_DIR)/$$secret_file" ]; then \
+			echo "Creating empty secret file(has to be filled): $(SECRETS_DIR)/$$secret_file"; \
+			touch "$(SECRETS_DIR)/$$secret_file"; \
+			chmod 600 "$(SECRETS_DIR)/$$secret_file"; \
+		fi; \
+	done
 	
 	@if [ ! -f "$(CERT_DIR)/inception_nginx.crt" ]; then \
 		echo "Generating SSL certificate"; \

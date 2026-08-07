@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -Eeuo pipefail
 
 source /usr/local/lib/entrypoint-lib.sh
 

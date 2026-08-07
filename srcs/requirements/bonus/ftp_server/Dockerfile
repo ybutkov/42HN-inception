@@ -1,10 +1,8 @@
 FROM debian:bookworm-slim
 
-ARG VSFTPD_VERSION=3.0.3-13+b2
-
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-    vsftpd=${VSFTPD_VERSION} \
+    vsftpd \
     && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /var/run/vsftpd/empty

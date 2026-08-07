@@ -1,4 +1,5 @@
 #!/bin/bash
+set -Eeuo pipefail
 
 ###############################################################################
 # Logging
@@ -26,23 +27,6 @@ require_env() {
 
     [ -n "${!name}" ] || fatal "Environment variable '$name' is not set."
 }
-
-###############################################################################
-# Docker Secrets
-###############################################################################
-
-# read_secret() {
-#     local file="$1"
-
-#     [ -f "$file" ] || fatal "Secret file '$file' not found."
-
-#     local value
-#     value=$(tr -d '\r\n' < "$file")
-
-#     [ -n "$value" ] || fatal "Secret file '$file' is empty."
-
-#     printf '%s' "$value"
-# }
 
 ###############################################################################
 # File checkers

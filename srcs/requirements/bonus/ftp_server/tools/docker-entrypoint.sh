@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -Eeuo pipefail
+
 source /usr/local/lib/entrypoint-lib.sh
 
 require_env DOMAIN_NAME

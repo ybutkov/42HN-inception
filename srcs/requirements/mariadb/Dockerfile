@@ -1,10 +1,8 @@
 FROM debian:bookworm-slim
 
-ARG MARIADB_VERSION=1:10.11.18-0+deb12u1
-
 RUN apt-get update -y && \
     apt-get install -y --no-install-recommends \
-    mariadb-server=${MARIADB_VERSION} && \
+    mariadb-server && \
     mkdir -p /run/mysqld && \
     chown -R mysql:mysql /run/mysqld && \
     rm -rf /var/lib/apt/lists/* && \

@@ -1,67 +1,105 @@
 #!/bin/bash
-set -e
+set -Eeuo pipefail
 
 source /usr/local/lib/entrypoint-lib.sh
 
-require_env DOMAIN_NAME
-require_env WP_DB_NAME
-require_env WP_DB_USER
-require_env WP_DB_PASSWORD_FILE
-require_env WP_DB_HOST
-require_env WP_ADMIN_USER
-require_env WP_ADMIN_EMAIL
-require_env WP_USER
-require_env WP_USER_EMAIL
+WP_PATH="/var/www/html"
 
+wp_cli() {
+    wp --allow-root --path="$WP_PATH" "$@"
+}
 
-DB_PASSWORD=$(read_secret "$WP_DB_PASSWORD_FILE")
-WP_ADMIN_PASSWORD=$(read_secret "$WP_ADMIN_PASSWORD_FILE")
-WP_USER_PASSWORD=$(read_secret "$WP_USER_PASSWORD_FILE")
+load_WP_secrets() {
+    DB_PASSWORD=$(read_secret "$WP_DB_PASSWORD_FILE")
+    WP_ADMIN_PASSWORD=$(read_secret "$WP_ADMIN_PASSWORD_FILE")
+    WP_USER_PASSWORD=$(read_secret "$WP_USER_PASSWORD_FILE")
+}
 
-cd /var/www/html
+validate_WP_environment() {
+    require_env DOMAIN_NAME
 
-if [ ! -f "wp-config.php" ]; then
-    echo "Creating wp-config.php and installing WordPress..."
-    wp core download --allow-root
+    require_env WP_DB_NAME
+    require_env WP_DB_USER
+    require_env WP_DB_HOST
+    require_env WP_DB_PASSWORD_FILE
 
-    wp config create \
+    require_env WP_ADMIN_USER
+    require_env WP_ADMIN_EMAIL
+
+    require_env WP_USER
+    require_env WP_USER_EMAIL
+}
+
+install_wordpress() {
+    info "Downloading WordPress..."
+
+    wp_cli core download
+
+    info "Creating wp-config.php..."
+
+    wp_cli config create \
         --dbname="$WP_DB_NAME" \
         --dbuser="$WP_DB_USER" \
         --dbpass="$DB_PASSWORD" \
-        --dbhost="$WP_DB_HOST" \
-        --allow-root
+        --dbhost="$WP_DB_HOST"
 
-    echo "Installing WordPress core..."
-    wp core install \
+    info "Installing WordPress..."
+
+    wp_cli core install \
         --url="https://$DOMAIN_NAME" \
         --title="$WP_TITLE" \
         --admin_user="$WP_ADMIN_USER" \
         --admin_password="$WP_ADMIN_PASSWORD" \
         --admin_email="$WP_ADMIN_EMAIL" \
-        --skip-email \
-        --allow-root
+        --skip-email
+}
 
-    echo "Creating regular user..."
-    wp user create \
+create_user() {
+    info "Creating regular user..."
+
+    wp_cli user create \
         "$WP_USER" \
         "$WP_USER_EMAIL" \
         --user_pass="$WP_USER_PASSWORD" \
-        --role=author \
-        --allow-root
+        --role=author
+}
 
-    echo "Configuring Redis Object Cache..."
-    wp config set WP_REDIS_HOST redis --allow-root
-    wp config set WP_REDIS_PORT 6379 --raw --allow-root
-    wp plugin install redis-cache --activate --allow-root
-    wp redis enable --allow-root
+configure_redis() {
+    info "Configuring Redis..."
 
-    chown -R www-data:www-data /var/www/html
+    wp_cli config set WP_REDIS_HOST redis
+    wp_cli config set WP_REDIS_PORT 6379 --raw
 
-    echo "WordPress installation finished!"
+    wp_cli plugin install redis-cache --activate
+    wp_cli redis enable
+}
+
+fix_permissions() {
+    chown -R www-data:www-data "$WP_PATH"
+}
+
+start_php() {
+    mkdir -p /run/php
+    exec php-fpm"${PHP_VERSION}" -F
+}
+
+###############################################################################
+# Main
+###############################################################################
+
+validate_WP_environment
+load_WP_secrets
+
+if [ ! -f "$WP_PATH/wp-config.php" ] || ! wp_cli core is-installed >/dev/null 2>&1; then
+
+    install_wordpress
+    create_user
+    configure_redis
+    fix_permissions
+
+    info "WordPress installation finished!"
 else
-    echo "wp-config.php already exists, skipping installation."
+    info "WordPress already installed."
 fi
 
-mkdir -p /run/php
-
-exec php-fpm${PHP_VERSION} -F
+start_php

@@ -1,10 +1,9 @@
 FROM debian:bookworm-slim
 
-ARG NGINX_VERSION=1.22.1-9+deb12u9
 
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-        nginx=${NGINX_VERSION} \
+        nginx \
         openssl \
         curl && \
     rm -rf /var/lib/apt/lists/*

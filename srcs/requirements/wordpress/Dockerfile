@@ -2,7 +2,6 @@ FROM debian:bookworm-slim
 
 ARG PHP_VERSION=8.2
 ARG WP_CLI_VERSION=2.10.0
-ARG MARIADB_VERSION=1:10.11.18-0+deb12u1
 
 ENV PHP_VERSION=${PHP_VERSION}
 
@@ -17,16 +16,21 @@ RUN apt-get update && \
         php${PHP_VERSION}-zip \
         php${PHP_VERSION}-intl \
         php${PHP_VERSION}-redis \
-        mariadb-client=${MARIADB_VERSION} \
+        mariadb-client \
         curl \
 		ca-certificates \
         unzip && \
     rm -rf /var/lib/apt/lists/*
 
-RUN curl -fsSL "https://github.com/wp-cli/wp-cli/releases/download/v${WP_CLI_VERSION}/wp-cli-${WP_CLI_VERSION}.phar" -o /usr/local/bin/wp && \
+RUN curl -fsSL \
+        --retry 5 \
+        --retry-delay 2 \
+        "https://github.com/wp-cli/wp-cli/releases/download/v${WP_CLI_VERSION}/wp-cli-${WP_CLI_VERSION}.phar" \
+        -o /usr/local/bin/wp && \
     chmod +x /usr/local/bin/wp
 
 COPY conf/www.conf /etc/php/${PHP_VERSION}/fpm/pool.d/www.conf
+
 COPY tools/docker-entrypoint.sh /usr/local/bin/
 COPY tools/entrypoint-lib.sh /usr/local/lib/
 

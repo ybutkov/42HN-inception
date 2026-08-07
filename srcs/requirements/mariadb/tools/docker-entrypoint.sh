@@ -23,7 +23,19 @@ if [ ! -f "/var/lib/mysql/.inception_initialized" ]; then
 
     mysql_install_db --user=mysql --datadir=/var/lib/mysql > /dev/null
     
-    envsubst < /etc/mysql/init.sql | mysqld --user=mysql --bootstrap
+    # envsubst < /etc/mysql/init.sql | mysqld --user=mysql --bootstrap
+    
+    MYSQL_ROOT_PASSWORD="$MYSQL_ROOT_PASSWORD" \
+    MYSQL_ADMIN_PASSWORD="$MYSQL_ADMIN_PASSWORD" \
+    MARIADB_WP_USER_PASSWORD="$MARIADB_WP_USER_PASSWORD" \
+    MARIADB_ADMIN_USER="$MARIADB_ADMIN_USER" \
+    MARIADB_DATABASE="$MARIADB_DATABASE" \
+    MARIADB_WP_USER="$MARIADB_WP_USER" \
+    HOSTNAME="$HOSTNAME" \
+    envsubst \
+        '$MYSQL_ROOT_PASSWORD $MYSQL_ADMIN_PASSWORD $MARIADB_WP_USER_PASSWORD $MARIADB_ADMIN_USER
+         $MARIADB_DATABASE $MARIADB_WP_USER $HOSTNAME' \
+    < /etc/mysql/init.sql | mysqld --user=mysql --bootstrap
 
     touch /var/lib/mysql/.inception_initialized
     echo "MariaDB setup finished!"

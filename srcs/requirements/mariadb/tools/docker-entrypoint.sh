@@ -7,9 +7,9 @@ require_env MARIADB_DATABASE
 require_env MARIADB_ADMIN_USER
 require_env MARIADB_WP_USER
 
-MYSQL_ROOT_PASSWORD=$(read_secret "$MARIADB_ROOT_PASSWORD_FILE")
-MYSQL_ADMIN_PASSWORD=$(read_secret "$MARIADB_ADMIN_PASSWORD_FILE")
-MARIADB_WP_USER_PASSWORD=$(read_secret "$MARIADB_WP_USER_PASSWORD_FILE")
+# MYSQL_ROOT_PASSWORD=$(read_secret "$MARIADB_ROOT_PASSWORD_FILE")
+# MYSQL_ADMIN_PASSWORD=$(read_secret "$MARIADB_ADMIN_PASSWORD_FILE")
+# MARIADB_WP_USER_PASSWORD=$(read_secret "$MARIADB_WP_USER_PASSWORD_FILE")
 
 mkdir -p /run/mysqld
 
@@ -23,18 +23,12 @@ if [ ! -f "/var/lib/mysql/.inception_initialized" ]; then
 
     mysql_install_db --user=mysql --datadir=/var/lib/mysql > /dev/null
     
-    # envsubst < /etc/mysql/init.sql | mysqld --user=mysql --bootstrap
-    
-    MYSQL_ROOT_PASSWORD="$MYSQL_ROOT_PASSWORD" \
-    MYSQL_ADMIN_PASSWORD="$MYSQL_ADMIN_PASSWORD" \
-    MARIADB_WP_USER_PASSWORD="$MARIADB_WP_USER_PASSWORD" \
-    MARIADB_ADMIN_USER="$MARIADB_ADMIN_USER" \
-    MARIADB_DATABASE="$MARIADB_DATABASE" \
-    MARIADB_WP_USER="$MARIADB_WP_USER" \
-    HOSTNAME="$HOSTNAME" \
+    MYSQL_ROOT_PASSWORD=$(read_secret "$MARIADB_ROOT_PASSWORD_FILE") \
+    MYSQL_ADMIN_PASSWORD=$(read_secret "$MARIADB_ADMIN_PASSWORD_FILE") \
+    MARIADB_WP_USER_PASSWORD=$(read_secret "$MARIADB_WP_USER_PASSWORD_FILE") \
     envsubst \
-        '$MYSQL_ROOT_PASSWORD $MYSQL_ADMIN_PASSWORD $MARIADB_WP_USER_PASSWORD $MARIADB_ADMIN_USER
-         $MARIADB_DATABASE $MARIADB_WP_USER $HOSTNAME' \
+        '$MYSQL_ROOT_PASSWORD $MYSQL_ADMIN_PASSWORD $MARIADB_WP_USER_PASSWORD 
+         $MARIADB_ADMIN_USER $MARIADB_DATABASE $MARIADB_WP_USER $HOSTNAME' \
     < /etc/mysql/init.sql | mysqld --user=mysql --bootstrap
 
     touch /var/lib/mysql/.inception_initialized

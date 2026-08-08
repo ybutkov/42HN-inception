@@ -24,9 +24,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 3
-      
-      # docker exec -it mariadb mysql -u root -p -e "SHOW DATABASES;"
-      # docker exec -it mariadb mysql -u root -p -e "SELECT User, Host FROM mysql.user;"
   
   wordpress:
     build: ./requirements/wordpress

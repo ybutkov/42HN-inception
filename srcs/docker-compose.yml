@@ -1,20 +1,30 @@
 name: inception
 
+# ==============================================================================
+# 1. TEMPLATES AND ANCHORS
+# ==============================================================================
+x-common-service: &common-service
+  init: true
+  restart: always
+  env_file: .env
+  networks:
+    - backend
+
+# ==============================================================================
+# 2. SERVICES
+# ==============================================================================
 services:
   mariadb:
+    <<: *common-service
     build: ./requirements/mariadb
     image: mariadb:0.1
     container_name: mariadb
-    env_file: .env
     secrets:
       - mariadb_root_pass
       - mariadb_admin_pass
       - mariadb_wp_user_pass
     volumes:
       - mariadb_data:/var/lib/mysql
-    networks:
-      - backend
-    restart: always
     healthcheck:
       test: [
         "CMD", "mariadb-admin", "--protocol=socket",
@@ -26,19 +36,16 @@ services:
       retries: 3
   
   wordpress:
+    <<: *common-service
     build: ./requirements/wordpress
     image: wordpress:0.1
     container_name: wordpress
-    env_file: .env
     secrets:
       - mariadb_wp_user_pass
       - wp_admin_pass
       - wp_user_pass
     volumes:
       - wordpress_data:/var/www/html
-    networks:
-      - backend
-    restart: always
     depends_on:
       mariadb:
         condition: service_healthy
@@ -51,10 +58,10 @@ services:
       retries: 3
 
   nginx:
+    <<: *common-service
     build: ./requirements/nginx
     image: nginx:0.1
     container_name: nginx
-    env_file: .env
     ports:
       - "443:443"
     secrets:
@@ -62,9 +69,6 @@ services:
       - nginx_key
     volumes:
       - wordpress_data:/var/www/html
-    networks:
-      - backend
-    restart: always
     depends_on:
       wordpress:
         condition: service_healthy
@@ -77,14 +81,12 @@ services:
       retries: 3
   
   redis:
+    <<: *common-service
     build: ./requirements/bonus/redis
     image: redis:0.1
     container_name: redis
-    restart: always
     volumes:
       - redis_data:/data
-    networks:
-      - backend
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
@@ -93,26 +95,21 @@ services:
       start_period: 5s
 
   portainer:
+    <<: *common-service
     build: ./requirements/bonus/portainer
     image: portainer:0.1
     container_name: portainer
-    env_file: .env
-    restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer_data:/data
-    networks:
-      - backend
     secrets:
       - portainer_admin_pass
 
   adminer:
+    <<: *common-service
     build: ./requirements/bonus/adminer
     image: adminer:0.1
     container_name: adminer
-    restart: always
-    networks:
-      - backend
     depends_on:
       mariadb:
         condition: service_healthy
@@ -123,18 +120,15 @@ services:
       retries: 3
 
   ftp_server:
+    <<: *common-service
     build: ./requirements/bonus/ftp_server
     image: ftp_server:0.1
     container_name: ftp_server
-    restart: always
-    env_file: .env
     ports:
       - "21:21"
       - "21210-21220:21210-21220"
     volumes:
       - wordpress_data:/var/www/html
-    networks:
-      - backend
     secrets:
       - ftp_password
     depends_on:
@@ -147,13 +141,14 @@ services:
       retries: 3
 
   my-website:
+    <<: *common-service
     build: ./requirements/bonus/my-website
     image: my-website:0.1
     container_name: my-website
-    restart: always
-    networks:
-      - backend
 
+# ==============================================================================
+# 3. VOLUMES
+# ==============================================================================
 volumes:
   mariadb_data:
     driver: local
@@ -183,10 +178,16 @@ volumes:
       o: bind
       device: /home/${USER_LOG:-${SUDO_USER:-$USER}}/data/portainer
 
+# ==============================================================================
+# 4. NETWORKS
+# ==============================================================================
 networks:
   backend:
     driver: bridge
 
+# ==============================================================================
+# 5. SECRETS
+# ==============================================================================
 secrets:
   mariadb_root_pass:
     file: ${MARIADB_ROOT_PASSWORD_HOST_FILE}

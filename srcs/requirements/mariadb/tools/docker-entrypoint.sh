@@ -31,4 +31,4 @@ if [ ! -f "/var/lib/mysql/.inception_initialized" ]; then
     echo "MariaDB setup finished!"
 fi
 
-exec mysqld --user=mysql
+exec "$@"

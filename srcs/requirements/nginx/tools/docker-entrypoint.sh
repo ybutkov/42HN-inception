@@ -23,4 +23,4 @@ cp "$NGINX_SSL_CERTIFICATE_KEY_FILE"    "$SSL_CERT_DST/$KEY_NAME"
 
 chmod 600 "$SSL_CERT_DST/$KEY_NAME"
 
-exec nginx -g "daemon off;"
+exec "$@"

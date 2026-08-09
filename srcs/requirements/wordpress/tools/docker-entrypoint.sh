@@ -80,7 +80,13 @@ fix_permissions() {
 
 start_php() {
     mkdir -p /run/php
-    exec php-fpm"${PHP_VERSION}" -F
+
+    if [ "$1" = "php-fpm" ]; then
+        shift
+        exec "php-fpm${PHP_VERSION}" "$@"
+    fi
+
+    exec "$@"
 }
 
 ###############################################################################

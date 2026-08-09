@@ -1,6 +1,6 @@
 FROM debian:bookworm-slim
 
-RUN apt-get update -y && \
+RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     mariadb-server \
     gettext && \
@@ -19,4 +19,6 @@ RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 EXPOSE 3306
 
-ENTRYPOINT ["docker-entrypoint.sh"]
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+
+CMD ["mysqld", "--user=mysql"]

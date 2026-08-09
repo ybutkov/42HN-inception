@@ -81,7 +81,7 @@ fix_permissions() {
 start_php() {
     mkdir -p /run/php
 
-    if [ "$1" = "php-fpm" ]; then
+    if [ "${1:-}" = "php-fpm" ]; then
         shift
         exec "php-fpm${PHP_VERSION}" "$@"
     fi
@@ -108,4 +108,4 @@ else
     info "WordPress already installed."
 fi
 
-start_php
+start_php "$@"

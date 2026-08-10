@@ -17,6 +17,7 @@ load_WP_secrets() {
 
 validate_WP_environment() {
     require_env DOMAIN_NAME
+    require_env WP_TITLE
 
     require_env WP_DB_NAME
     require_env WP_DB_USER
@@ -25,9 +26,14 @@ validate_WP_environment() {
 
     require_env WP_ADMIN_USER
     require_env WP_ADMIN_EMAIL
+    require_env WP_ADMIN_PASSWORD_FILE
+    require_env WP_USER_PASSWORD_FILE
 
     require_env WP_USER
     require_env WP_USER_EMAIL
+
+    require_env WP_REDIS_HOST
+    require_env WP_REDIS_PORT
 }
 
 install_wordpress() {
@@ -67,8 +73,8 @@ create_user() {
 configure_redis() {
     info "Configuring Redis..."
 
-    wp_cli config set WP_REDIS_HOST redis
-    wp_cli config set WP_REDIS_PORT 6379 --raw
+    wp_cli config set WP_REDIS_HOST "$WP_REDIS_HOST"
+    wp_cli config set WP_REDIS_PORT "$WP_REDIS_PORT" --raw
 
     wp_cli plugin install redis-cache --activate
     wp_cli redis enable

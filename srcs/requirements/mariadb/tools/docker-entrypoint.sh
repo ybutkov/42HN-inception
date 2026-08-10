@@ -7,6 +7,10 @@ require_env MARIADB_DATABASE
 require_env MARIADB_ADMIN_USER
 require_env MARIADB_WP_USER
 
+require_env MARIADB_ROOT_PASSWORD_FILE
+require_env MARIADB_ADMIN_PASSWORD_FILE
+require_env MARIADB_WP_USER_PASSWORD_FILE
+
 mkdir -p /run/mysqld
 
 chown -R mysql:mysql /run/mysqld 

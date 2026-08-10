@@ -2,10 +2,10 @@ NAME        = inception
 
 -include srcs/.env
 
-USER_LOG := $(shell echo $${SUDO_USER:-$$(whoami)})
+USER_LOG 		:= $(shell echo $${SUDO_USER:-$$(whoami)})
+DATA_PATH 		= /home/$(USER_LOG)/data
 
-COMPOSE		:= USER_LOG=$(USER_LOG) docker compose -f srcs/docker-compose.yml
-DATA_PATH	= /home/$(USER_LOG)/data
+COMPOSE			:= DATA_PATH=$(DATA_PATH) docker compose -f srcs/docker-compose.yml
 
 CERT_HOST_FILE := $(shell realpath -m srcs/$(NGINX_SSL_CERTIFICATE_HOST_FILE))
 CERT_KEY_FILE  := $(shell realpath -m srcs/$(NGINX_SSL_CERTIFICATE_KEY_HOST_FILE))

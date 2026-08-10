@@ -187,28 +187,28 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      device: /home/${USER_LOG:-${SUDO_USER:-$USER}}/data/mariadb
+      device: ${DATA_PATH}/mariadb
 
   wordpress_data:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: /home/${USER_LOG:-${SUDO_USER:-$USER}}/data/wordpress
+      device: ${DATA_PATH}/wordpress
 
   redis_data:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: /home/${USER_LOG:-${SUDO_USER:-$USER}}/data/redis
+      device: ${DATA_PATH}/redis
 
   portainer_data:
     driver: local
     driver_opts:
       type: none
       o: bind
-      device: /home/${USER_LOG:-${SUDO_USER:-$USER}}/data/portainer
+      device: ${DATA_PATH}/portainer
 
 # ==============================================================================
 # 4. NETWORKS

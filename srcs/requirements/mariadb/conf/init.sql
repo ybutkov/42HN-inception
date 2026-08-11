@@ -19,7 +19,7 @@ GRANT ALL PRIVILEGES
 ON `${MARIADB_DATABASE}`.* TO '${MARIADB_WP_USER}'@'%';
 
 CREATE USER IF NOT EXISTS 'healthcheck'@'localhost' 
-IDENTIFIED VIA unix_socket AS 'root';
+IDENTIFIED BY 'healthcheck_pass';
 
 GRANT USAGE ON *.* TO 'healthcheck'@'localhost';
 

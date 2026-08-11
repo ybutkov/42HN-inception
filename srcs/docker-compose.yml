@@ -33,9 +33,13 @@ services:
       - mariadb_data:/var/lib/mysql
     healthcheck:
       test: [
-        "CMD", "mariadb-admin", "--protocol=socket",
-        "-S", "/run/mysqld/mysqld.sock", "ping",
-        "-u", "healthcheck"
+        "CMD",
+        "mariadb-admin",
+        "--protocol=socket",
+        "-S", "/run/mysqld/mysqld.sock",
+        "-u", "healthcheck",
+        "-phealthcheck_pass",
+        "ping"
       ]
       interval: 10s
       timeout: 5s

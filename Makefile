@@ -23,6 +23,15 @@ SECRETS_DIR = secrets
 
 VOLUMES    	:= mariadb wordpress redis portainer
 
+SERVICE_COMMANDS := up start stop restart logs
+
+ENTRYPOINT_LIB := srcs/scripts/entrypoint-lib.sh
+TARGET_DIRS    := srcs/requirements/nginx/tools/ \
+                  srcs/requirements/wordpress/tools/ \
+                  srcs/requirements/mariadb/tools/ \
+                  srcs/requirements/bonus/ftp_server/tools/ \
+                  srcs/requirements/bonus/portainer/tools/
+
 all: prepare up
 	
 
@@ -44,7 +53,7 @@ prepare:
 	done
 	
 	@if [ ! -f "$(CERT_DIR)/inception_nginx.crt" ]; then \
-		echo "Generating SSL certificate"; \
+		echo "Generating SSL certificate..."; \
 		openssl req -x509 -nodes \
 			-days 365 \
 			-newkey rsa:2048 \
@@ -54,35 +63,39 @@ prepare:
 			-addext "subjectAltName=DNS:$(DOMAIN_NAME),DNS:me.$(DOMAIN_NAME)"; \
 	fi
 
-up:
-	cp srcs/scripts/entrypoint-lib.sh srcs/requirements/nginx/tools/
-	cp srcs/scripts/entrypoint-lib.sh srcs/requirements/wordpress/tools/
-	cp srcs/scripts/entrypoint-lib.sh srcs/requirements/mariadb/tools/
-	cp srcs/scripts/entrypoint-lib.sh srcs/requirements/bonus/ftp_server/tools/
-	cp srcs/scripts/entrypoint-lib.sh srcs/requirements/bonus/portainer/tools/
+.copy-lib:
+	@echo "Copying entrypoint library to services..."
+	@for dir in $(TARGET_DIRS); do cp $(ENTRYPOINT_LIB) $$dir; done
 
-	$(COMPOSE) up -d --build
+.clean-lib:
+	@echo "Cleaning up entrypoint library copies..."
+	@for dir in $(TARGET_DIRS); do rm -f $$dir/entrypoint-lib.sh; done
+
+ifneq ($(filter $(firstword $(MAKECMDGOALS)),$(SERVICE_COMMANDS)),)
+  SERVICE_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+  $(eval $(SERVICE_ARGS):;@:)
+endif
+
+up: .copy-lib
+	$(COMPOSE) up -d --build $(SERVICE_ARGS)
 	
+start:
+	$(COMPOSE) start $(SERVICE_ARGS)
+
+stop:
+	$(COMPOSE) stop $(SERVICE_ARGS)
+
+restart:
+	$(COMPOSE) restart $(SERVICE_ARGS)
+
 down:
 	$(COMPOSE) down
 
-stop:
-	$(COMPOSE) stop
-
-start:
-	$(COMPOSE) start
-
 logs:
-	$(COMPOSE) logs -f
+	$(COMPOSE) logs -f $(SERVICE_ARGS)
 
-clean:
+clean: .clean-lib
 	$(COMPOSE) down --rmi all --volumes
-	rm -f srcs/requirements/nginx/tools/entrypoint-lib.sh
-	rm -f srcs/requirements/wordpress/tools/entrypoint-lib.sh
-	rm -f srcs/requirements/mariadb/tools/entrypoint-lib.sh
-	rm -f srcs/requirements/bonus/ftp_server/tools/entrypoint-lib.sh
-	rm -f srcs/requirements/bonus/portainer/tools/entrypoint-lib.sh
-
 
 fclean f: clean
 	@docker run --rm -v $(DATA_PATH):/data alpine sh -c 'rm -rf /data/*'

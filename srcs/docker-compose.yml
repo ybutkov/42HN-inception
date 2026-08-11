@@ -88,16 +88,15 @@ services:
     build: ./requirements/nginx
     image: nginx:0.1
     container_name: nginx
-    environment:
-      - NGINX_SSL_CERTIFICATE_HOST_FILE
-      - NGINX_SSL_CERTIFICATE_FILE
-      - NGINX_SSL_CERTIFICATE_KEY_HOST_FILE
-      - NGINX_SSL_CERTIFICATE_KEY_FILE
     ports:
       - "443:443"
     secrets:
-      - nginx_cert
-      - nginx_key
+      - source: nginx_cert
+        target: /etc/nginx/ssl/inception.crt
+        mode: 0444
+      - source: nginx_key
+        target: /etc/nginx/ssl/inception.key
+        mode: 0400
     volumes:
       - wordpress_data:/var/www/html
     depends_on:

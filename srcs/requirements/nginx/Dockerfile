@@ -9,13 +9,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 COPY conf/nginx.conf /etc/nginx/nginx.conf
-COPY tools/docker-entrypoint.sh /usr/local/bin/
-COPY tools/entrypoint-lib.sh /usr/local/lib/
-
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 EXPOSE 443
-
-ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 
 CMD ["nginx", "-g", "daemon off;"]

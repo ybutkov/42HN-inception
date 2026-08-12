@@ -23,6 +23,15 @@ SECRETS_DIR = secrets
 
 VOLUMES    	:= mariadb wordpress redis portainer
 
+REQUIRED_FILES := \
+	srcs/.env \
+	srcs/docker-compose.yml \
+	srcs/requirements/nginx/conf/nginx.conf \
+	srcs/requirements/mariadb/conf/50-server.cnf \
+	srcs/requirements/mariadb/conf/init.sql \
+	srcs/requirements/wordpress/conf/www.conf \
+	srcs/requirements/bonus/ftp_server/conf/vsftpd.conf.template
+
 SERVICE_COMMANDS := up start stop restart logs
 
 ENTRYPOINT_LIB := srcs/scripts/entrypoint-lib.sh
@@ -32,9 +41,17 @@ TARGET_DIRS    := srcs/requirements/nginx/tools/ \
                   srcs/requirements/bonus/ftp_server/tools/ \
                   srcs/requirements/bonus/portainer/tools/
 
-all: prepare up
+all: check-files prepare up
 	
-
+check-files:
+	@for file in $(REQUIRED_FILES); do \
+		if [ ! -f "$$file" ]; then \
+			echo "Error: required file not found: $$file"; \
+			exit 1; \
+		fi; \
+	done
+	@echo "All required files are present."
+	
 prepare:	
 	@for vol in $(VOLUMES); do \
 		mkdir -p "$(DATA_PATH)/$$vol"; \
